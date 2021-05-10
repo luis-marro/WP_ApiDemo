@@ -1,0 +1,18 @@
+runtime: go112
+env: standard
+handlers:
+  - url: /.*
+    script: auto
+instance_class: F1
+automatic_scaling:
+  max_instances: 1
+  min_instances: 1
+  max_idle_instances: 1
+  min_pending_latency: automatic
+  max_pending_latency: 30ms
+env_variables:
+  GOOGLE_APPLICATION_CREDENTIALS: "carssparepartsstore-b2f1a6351e48.json"
+  TESTING_CREDENTIALS: "../../carssparepartsstore-b2f1a6351e48.json"
+  PROJECT_ID: "carssparepartsstore"
+
+

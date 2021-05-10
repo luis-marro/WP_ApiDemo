@@ -17,7 +17,9 @@ func getAllCars() {
 			})
 			return
 		}
-		c.JSON(http.StatusOK, listOfMakes)
+		c.JSON(http.StatusOK, gin.H{
+			"Makes": listOfMakes,
+		})
 	})
 }
 
