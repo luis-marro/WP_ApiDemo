@@ -9,14 +9,17 @@ import (
 )
 
 type Part struct {
-	Id          string    `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Price       float32   `json:"price"`
-	Pictures    []string  `json:"Pictures"`
-	Inventory   int       `json:"Inventory"`
-	IsNew       bool      `json:"IsNew"`
-	CreatedAt   time.Time `json:"CreatedAt"`
+	Id          string    `json:"id" firestore:"Id"`
+	Name        string    `json:"name" firestore:"Name"`
+	Description string    `json:"description" firestore:"Description"`
+	Keywords    []string  `json:"keywords" firestore:"Keywords"`
+	Category    string    `json:"category" firestore:"Category"`
+	Price       float32   `json:"price" firestore:"Price"`
+	Pictures    []string  `json:"Pictures" firestore:"Pictures"`
+	Inventory   int       `json:"Inventory" firestore:"Inventory"`
+	IsNew       bool      `json:"IsNew" firestore:"IsNew"`
+	CreatedAt   time.Time `json:"CreatedAt" firestore:"CreatedAt"`
+	Cars        []string  `json:"fit" firestore:"Fit"`
 }
 
 const PartsCollection = "Part"
@@ -41,6 +44,7 @@ func GetAllParts() ([]Part, error) {
 		ref := doc.Ref.ID
 		err = doc.DataTo(&part)
 		if err != nil {
+			log.Println("Error on retrieved object: ", err)
 			continue
 		}
 		part.Id = ref
@@ -67,6 +71,8 @@ func GetPartByID(partID string) (Part, error) {
 	return retrievedPart, nil
 }
 
+// GetPartByName Function to retrieve the information for all the parts that contain some of the
+// Keywords sent in the argument.
 func GetPartByName(partName string) ([]Part, error) {
 	var matchingParts []Part
 	partName = strings.ToUpper(partName)
@@ -94,4 +100,92 @@ func GetPartByName(partName string) ([]Part, error) {
 	}
 
 	return matchingParts, nil
+}
+
+// DiminishInventory Function that takes a part ID and diminishes the inventory by one in the Database.
+func DiminishInventory(partId string) error {
+	_, err := DbClient.Collection(PartsCollection).Doc(partId).Update(Ctx, []firestore.Update{
+		{
+			Path:  "Inventory",
+			Value: firestore.Increment(-1),
+		},
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// CreateNewPart Function used to create a new Part from scratch in the database.
+func CreateNewPart(name, description, category string, price float32, cars, pictures []string,
+	isNew bool, inventory int) (string, error) {
+	upper := strings.ToUpper(name)
+	keywords := strings.Fields(upper)
+	var newPart = Part{
+		Name:        name,
+		Description: description,
+		Category:    category,
+		Keywords:    keywords,
+		Price:       price,
+		Pictures:    pictures,
+		Inventory:   inventory,
+		IsNew:       isNew,
+		CreatedAt:   time.Now(),
+		Cars:        cars,
+	}
+
+	ref, _, err := DbClient.Collection(PartsCollection).Add(Ctx, newPart)
+	if err != nil {
+		return "", err
+	}
+
+	return ref.ID, nil
+}
+
+// UpdatePart Function to update the fields of a part in the DB.
+// Returns an error if the update operation fails.
+func UpdatePart(partId, name, description, category string, price float32, cars, pictures []string,
+	isNew bool, inventory int) error {
+	upper := strings.ToUpper(name)
+	keywords := strings.Fields(upper)
+	_, err := DbClient.Collection(PartsCollection).Doc(partId).Update(Ctx, []firestore.Update{
+		{
+			Path:  "Description",
+			Value: description,
+		},
+		{
+			Path:  "Fit",
+			Value: cars,
+		},
+		{
+			Path:  "Inventory",
+			Value: inventory,
+		},
+		{
+			Path:  "IsNew",
+			Value: isNew,
+		},
+		{
+			Path:  "Keywords",
+			Value: keywords,
+		},
+		{
+			Path:  "Name",
+			Value: name,
+		},
+		{
+			Path:  "Pictures",
+			Value: pictures,
+		},
+		{
+			Path:  "Price",
+			Value: price,
+		},
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

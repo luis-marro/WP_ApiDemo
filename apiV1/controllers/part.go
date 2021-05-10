@@ -65,11 +65,90 @@ func searchPartByName() {
 				return
 			}
 			c.JSON(http.StatusOK, foundParts)
+			return
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"Message": "Error, missing search keywords",
 			})
 			return
 		}
+	})
+}
+
+// sellPart Function to register the route used to diminish the inventory of a part by 1
+func sellPart() {
+	apiv1.DELETE("/sellPart", func(c *gin.Context) {
+		params := c.Request.URL.Query()
+		if val, ok := params["partId"]; ok {
+			partId := val[0]
+			err := model.DiminishInventory(partId)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"Message": "The part was not found",
+				})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"Message": "Part Sold!",
+			})
+			return
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"Message": "Error, no valid Item ID",
+			})
+			return
+		}
+	})
+}
+
+// createPart Handler function to create a new part in the system.
+func createPart() {
+	apiv1.POST("/createPart", func(c *gin.Context) {
+		var part *model.Part
+		if err := c.BindJSON(&part); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"Message: ": "Error parsing body JSON",
+			})
+		}
+		log.Println("Received Part: ", part)
+		ref, err := model.CreateNewPart(part.Name, part.Description, part.Category, part.Price, part.Cars,
+			part.Pictures, part.IsNew, part.Inventory)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"Message: ": "Error creating the part",
+				"Error":     err,
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"Message: ":   "Part created Successfully",
+			"createdPart": ref,
+		})
+		return
+	})
+}
+
+// updatePart Handler function for the route that updates a part in the database
+func updatePart() {
+	apiv1.PATCH("/updatePart", func(c *gin.Context) {
+		var part *model.Part
+		if err := c.BindJSON(&part); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"Message": "The request contains an incorrect body",
+			})
+			return
+		}
+		err := model.UpdatePart(part.Id, part.Name, part.Description, part.Category, part.Price, part.Cars,
+			part.Pictures, part.IsNew, part.Inventory)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"Message:": "Error updating the part",
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"Message: ": "The part was updated successfully",
+		})
+		return
 	})
 }

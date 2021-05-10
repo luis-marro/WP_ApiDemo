@@ -15,7 +15,9 @@ func InitServer() *gin.Engine {
 	getAllPartsRoute()
 	getSpecificItem()
 	searchPartByName()
-
+	sellPart()
+	updatePart()
+	createPart()
 	return r
 }
 
