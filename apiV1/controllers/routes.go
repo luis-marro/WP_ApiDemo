@@ -18,6 +18,11 @@ func InitServer() *gin.Engine {
 	sellPart()
 	updatePart()
 	createPart()
+
+	// Routes for the cars
+	getAllCars()
+	getModelForMake()
+	getCarEngine()
 	return r
 }
 
