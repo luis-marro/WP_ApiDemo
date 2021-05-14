@@ -11,9 +11,7 @@ func TestGetAllCars(t *testing.T) {
 		t.Error("Error retrieving the cars, ", err)
 	}
 	fmt.Println(allCars)
-	if len(allCars) != 4 {
-		t.Error("Not all cars were retrieved")
-	}
+
 }
 
 func TestGetModelsByMake(t *testing.T) {
