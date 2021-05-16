@@ -24,6 +24,10 @@ func InitServer() *gin.Engine {
 	getAllCars()
 	getModelForMake()
 	getCarEngine()
+
+	// Routes for the users
+	createUser()
+	findUser()
 	return r
 }
 

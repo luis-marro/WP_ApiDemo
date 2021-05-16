@@ -111,8 +111,8 @@ func createPart() {
 			})
 		}
 		log.Println("Received Part: ", part)
-		ref, err := model.CreateNewPart(part.Name, part.Description, part.Category, part.Price, part.Cars,
-			part.Pictures, part.IsNew, part.Inventory)
+		ref, err := model.CreateNewPart(part.Name, part.Description, part.Category, part.Price,
+			part.Pictures, part.IsNew, part.Inventory, part.CarMake, part.CarModel)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"Message: ": "Error creating the part",

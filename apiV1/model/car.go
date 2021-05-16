@@ -100,3 +100,19 @@ func GetCarEngine(make, model string) ([]string, error) {
 
 	return allCars, nil
 }
+
+// GetCarReference function to get the database reference for a specific car
+func GetCarReference(make, model string) (string, error) {
+	query := DbClient.Collection(carCollection).Where("Make", "==", make).
+		Where("Model", "==", model).
+		Documents(Ctx)
+	doc, err := query.Next()
+	if err == iterator.Done {
+		return "", err
+	}
+	if err != nil {
+		return "", err
+	}
+	reference := doc.Ref.ID
+	return reference, nil
+}
