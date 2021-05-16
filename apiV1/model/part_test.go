@@ -64,9 +64,9 @@ func TestGetPartByName(t *testing.T) {
 
 func TestCreateNewPart(t *testing.T) {
 	ref, err := CreateNewPart("Bomba de Agua", "Bomba de Agua Aisin WPV800",
-		"7FBYk6tt2f6QfW7itCDM", 578.56, []string{"Au4t843YekUuX5ncRWX1", "FvpxWxT0m4corODgqKJR"},
+		"7FBYk6tt2f6QfW7itCDM", 578.56,
 		[]string{"https://www.fcpeuro.com/public/assets/products/173597/large/open-uri20141021-20252-blvd6y.?1496444488"},
-		true, 5)
+		true, 5, "Volvo", "S40 T5")
 
 	if err != nil {
 		t.Error("Error inserting the part: ", err)

@@ -20,6 +20,9 @@ type Part struct {
 	IsNew       bool      `json:"IsNew" firestore:"IsNew"`
 	CreatedAt   time.Time `json:"CreatedAt" firestore:"CreatedAt"`
 	Cars        []string  `json:"fit" firestore:"Fit"`
+	CarMake     string    `json:"carMake"`
+	CarModel    string    `json:"carModel"`
+	CarYear     int       `json:"carYear"`
 }
 
 const PartsCollection = "Part"
@@ -117,8 +120,12 @@ func DiminishInventory(partId string) error {
 }
 
 // CreateNewPart Function used to create a new Part from scratch in the database.
-func CreateNewPart(name, description, category string, price float32, cars, pictures []string,
-	isNew bool, inventory int) (string, error) {
+func CreateNewPart(name, description, category string, price float32, pictures []string,
+	isNew bool, inventory int, carMake, carModel string) (string, error) {
+	carRef, err := GetCarReference(carMake, carModel)
+	if err != nil {
+		log.Println("Error getting the Car reference for a new Part: ", err)
+	}
 	upper := strings.ToUpper(name)
 	keywords := strings.Fields(upper)
 	var newPart = Part{
@@ -131,7 +138,7 @@ func CreateNewPart(name, description, category string, price float32, cars, pict
 		Inventory:   inventory,
 		IsNew:       isNew,
 		CreatedAt:   time.Now(),
-		Cars:        cars,
+		Cars:        []string{carRef},
 	}
 
 	ref, _, err := DbClient.Collection(PartsCollection).Add(Ctx, newPart)
