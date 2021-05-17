@@ -45,7 +45,7 @@ func createUser() {
 
 // findUser Handler function to lookup an user in the database.
 func findUser() {
-	apiv1.GET("/findUser", func(c *gin.Context) {
+	apiv1.POST("/findUser", func(c *gin.Context) {
 		var reqUser model.User
 		if c.BindJSON(&reqUser) == nil {
 			pwAsByte := []byte(reqUser.UnsafePassword + model.PasswordSalt)

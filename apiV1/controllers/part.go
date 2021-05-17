@@ -108,7 +108,10 @@ func createPart() {
 		if err := c.BindJSON(&part); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"Message: ": "Error parsing body JSON",
+				"Error":     err,
 			})
+			log.Println("Error parsing body for Create Part API: ", err)
+			return
 		}
 		log.Println("Received Part: ", part)
 		ref, err := model.CreateNewPart(part.Name, part.Description, part.Category, part.Price,
