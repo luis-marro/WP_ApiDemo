@@ -10,6 +10,8 @@ func TestCreateNewUser(t *testing.T) {
 		"luisfer.marroquin1@gmail.com",
 		"43294685",
 		"Carretera a el Salvador",
+		"5465896",
+		"fdafd",
 		1,
 	}
 	err := CreateNewUser(testUser)
@@ -19,7 +21,7 @@ func TestCreateNewUser(t *testing.T) {
 }
 
 func TestFetchUser(t *testing.T) {
-	_, err := FetchUser("luisfer.marroquin1@gmail.com")
+	_, err := FetchUser("luis@mail.com")
 	if err != nil {
 		t.Error("Expected user was not found, ", err)
 	}

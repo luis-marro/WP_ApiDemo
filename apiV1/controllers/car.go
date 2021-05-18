@@ -6,7 +6,15 @@ import (
 	"net/http"
 )
 
-// getAllCars Handler func to retrieve an array with all the car makes from the DB.
+// getAllCars godoc
+// @Summary Gets a list of all the car makes that are present in the Database
+// @Description Get only the makes for all the cars in the DB
+// @ID get-all-the-cars
+// @Accept json
+// @Produce json
+// @Success 200 {array} string
+// @Failure 500 {object} map[string]string
+// @Router /getAllCars [get]
 func getAllCars() {
 	apiv1.GET("/getAllCars", func(c *gin.Context) {
 		listOfMakes, err := model.GetAllCars()
@@ -23,7 +31,16 @@ func getAllCars() {
 	})
 }
 
-// getSpecificPart Handler function for the route to lookup all car models of a specific make
+// getSpecificPart godoc
+// @Summary Get Model for Make
+// @Description Handler function for the route to lookup all car models of a specific make
+// @Accept json
+// @Produce json
+// @Param carMake query string true "Car make to filter by"
+// @Success 200 {array} string
+// @Failure 500 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /getSpecificCar [get]
 func getModelForMake() {
 	apiv1.GET("/getSpecificCar", func(c *gin.Context) {
 		params := c.Request.URL.Query()
@@ -46,7 +63,16 @@ func getModelForMake() {
 	})
 }
 
-// getCarEngine Handler function to lookup all the available engines for a specific make and model
+// getCarEngine godoc
+// @Summary Get available engines for make and model
+// @Description Handler function to lookup all the available engines for a specific make and model
+// @Produce json
+// @Param carMake query string true "Query params with the Car's Make"
+// @Param carModel query string true "Query params with the Car's Model"
+// @Success 200 {array} string
+// @Failure 500 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /getCarEngine [get]
 func getCarEngine() {
 	apiv1.GET("/getCarEngine", func(c *gin.Context) {
 		params := c.Request.URL.Query()

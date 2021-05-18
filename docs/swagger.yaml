@@ -1,0 +1,362 @@
+basePath: /api/v1
+definitions:
+  model.Part:
+    properties:
+      CreatedAt:
+        type: string
+      Inventory:
+        type: integer
+      IsNew:
+        type: boolean
+      Pictures:
+        items:
+          type: string
+        type: array
+      carMake:
+        type: string
+      carModel:
+        type: string
+      carYear:
+        type: integer
+      category:
+        type: string
+      description:
+        type: string
+      fit:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      keywords:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  model.User:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      payment:
+        type: integer
+      phoneNumber:
+        type: string
+      safePassword:
+        type: string
+      unsafePassword:
+        type: string
+    type: object
+host: localhost:8080, https://carssparepartsstore.appspot.com
+info:
+  contact: {}
+  description: API to run the operations for an ecommerce application for care spare
+    parts
+  title: Car Spare Parts API
+  version: "1.0"
+paths:
+  /createPart:
+    post:
+      consumes:
+      - application/json
+      description: Handler function to create a new part in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new Part
+  /createUser:
+    post:
+      consumes:
+      - application/json
+      description: Handler function to create a new user in the Database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new User
+  /findUser:
+    post:
+      consumes:
+      - application/json
+      description: Handler function to lookup an user in the database.
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login
+  /getAllCars:
+    get:
+      consumes:
+      - application/json
+      description: Get only the makes for all the cars in the DB
+      operationId: get-all-the-cars
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Gets a list of all the car makes that are present in the Database
+  /getCarEngine:
+    get:
+      description: Handler function to lookup all the available engines for a specific
+        make and model
+      parameters:
+      - description: Query params with the Car's Make
+        in: path
+        name: carMake
+        required: true
+        type: string
+      - description: Query params with the Car's Model
+        in: path
+        name: carModel
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get available engines for make and model
+  /getSpecificCar:
+    get:
+      consumes:
+      - application/json
+      description: Handler function for the route to lookup all car models of a specific
+        make
+      parameters:
+      - description: Car make to filter by
+        in: path
+        name: carMake
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Model for Make
+  /searchParts:
+    get:
+      description: Search all the parts in the DB that contain the Keywords passed
+        in the query string
+      parameters:
+      - description: 'Keywords to lookup a part, separated by - '
+        in: path
+        name: searchQuery
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Part'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Search a part by name
+  /sellPart:
+    delete:
+      description: Substract 1 to the inventory of an specific part
+      parameters:
+      - description: Id of the part to which the inventory must be diminshed
+        in: path
+        name: partId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Diminish inventory for a part
+  /updatePart:
+    patch:
+      consumes:
+      - application/json
+      description: Handler function to update the fields of a part in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update part fields
+  /viewPart/{id}:
+    get:
+      description: Function to load an item from an ID received in the URL
+      parameters:
+      - description: the ID of the part to be reviewed
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Part'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a specific Part
+  /viewParts:
+    get:
+      description: Handler function to register the route that loads all the parts
+        from the database.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Part'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: View All Parts
+swagger: "2.0"

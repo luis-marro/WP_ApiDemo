@@ -7,12 +7,15 @@ import (
 	"net/http"
 )
 
-// getAllPartsRoute function to register the route that loads all the parts from the database.
+// getAllPartsRoute godoc
+// @Summary View All Parts
+// @Description Handler function to register the route that loads all the parts from the database.
+// @Produce json
+// @Success 200 {array} model.Part
+// @Failure 500 {object} map[string]string
+// @Router /viewParts [get]
 func getAllPartsRoute() {
 	apiv1.GET("/viewParts", func(c *gin.Context) {
-		/*params := c.Request.URL.Query()
-		start, startErr := strconv.Atoi(params["start"][0])
-		limit, limitErr := strconv.Atoi(params["limit"][0])*/ // Parse Params Example
 		parts, err := model.GetAllParts()
 		if err != nil {
 			log.Println("Error retrieving all the events from the database: ", err)
@@ -25,7 +28,14 @@ func getAllPartsRoute() {
 	})
 }
 
-//getSpecificItem Function to load an item from an ID received in the URL
+// getSpecificItem godoc
+// @Summary Get a specific Part
+// @Description Function to load an item from an ID received in the URL
+// @Produce json
+// @Param id path string true "the ID of the part to be reviewed"
+// @Success 200 {object} model.Part
+// @Failure 500 {object} map[string]string
+// @Router /viewPart/{id} [get]
 func getSpecificItem() {
 	apiv1.GET("/viewParts/:id", func(c *gin.Context) {
 		id := c.Param("id")
@@ -42,15 +52,15 @@ func getSpecificItem() {
 	})
 }
 
-//createNewItem Function for POST request to create a new item
-func createNewItem() {
-	apiv1.POST("/createPart", func(c *gin.Context) {
-
-	})
-}
-
-// searchPartByName Function to search a part in the system by the search parameters
-// Returns a list with all the retrieved courses, and an error if applies
+// searchPartByName godoc
+// @Summary Search a part by name
+// @Description Search all the parts in the DB that contain the Keywords passed in the query string
+// @Produces json
+// @Param searchQuery query string true "Keywords to lookup a part, separated by - "
+// @Success 200 {array} model.Part
+// @Failure 500 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /searchParts [get]
 func searchPartByName() {
 	apiv1.GET("/searchParts", func(c *gin.Context) {
 		params := c.Request.URL.Query()
@@ -75,7 +85,15 @@ func searchPartByName() {
 	})
 }
 
-// sellPart Function to register the route used to diminish the inventory of a part by 1
+// sellPart godoc
+// @Summary Diminish inventory for a part
+// @Description Substract 1 to the inventory of an specific part
+// @Produces json
+// @Param partId query string true "Id of the part to which the inventory must be diminshed"
+// @Success 200 {string} string
+// @Failure 500 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /sellPart [delete]
 func sellPart() {
 	apiv1.DELETE("/sellPart", func(c *gin.Context) {
 		params := c.Request.URL.Query()
@@ -85,6 +103,7 @@ func sellPart() {
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{
 					"Message": "The part was not found",
+					"Error":   err,
 				})
 				return
 			}
@@ -101,7 +120,15 @@ func sellPart() {
 	})
 }
 
-// createPart Handler function to create a new part in the system.
+// createPart godoc
+// @Summary Create a new Part
+// @Description Handler function to create a new part in the system
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /createPart [post]
 func createPart() {
 	apiv1.POST("/createPart", func(c *gin.Context) {
 		var part *model.Part
@@ -132,12 +159,21 @@ func createPart() {
 }
 
 // updatePart Handler function for the route that updates a part in the database
+// @Summary Update part fields
+// @Description Handler function to update the fields of a part in the system
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /updatePart [patch]
 func updatePart() {
 	apiv1.PATCH("/updatePart", func(c *gin.Context) {
 		var part *model.Part
 		if err := c.BindJSON(&part); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"Message": "The request contains an incorrect body",
+				"Error":   err,
 			})
 			return
 		}
@@ -146,6 +182,7 @@ func updatePart() {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"Message:": "Error updating the part",
+				"Error":    err,
 			})
 			return
 		}

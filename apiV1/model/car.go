@@ -6,12 +6,13 @@ import (
 	"log"
 )
 
+// Car represents the model of a car in the Database
 type Car struct {
-	Make   string `json:"make" firestore:"make"`
-	Model  string `json:"model" firestore:"model"`
-	Engine string `json:"engine" firestore:"engine"`
-	Year   int    `json:"year" firestore:"year"`
-	Id     string `json:"id"`
+	Make   string `json:"make" firestore:"make" example:"Volvo"`
+	Model  string `json:"model" firestore:"model" example:"C30"`
+	Engine string `json:"engine" firestore:"engine" example:"2.5T"`
+	Year   int    `json:"year" firestore:"year" example:"2013"`
+	Id     string `json:"id" example:"9OiBdQ41inBr4KigocWj"`
 }
 
 const carCollection = "Car"

@@ -8,7 +8,15 @@ import (
 	"net/http"
 )
 
-// createUser Handler function to create a new user in the Database
+// createUser godoc
+// @Summary Create a new User
+// @Description Handler function to create a new user in the Database
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /createUser [post]
 func createUser() {
 	apiv1.POST("/createUser", func(c *gin.Context) {
 		var reqUser model.User
@@ -43,7 +51,15 @@ func createUser() {
 	})
 }
 
-// findUser Handler function to lookup an user in the database.
+// findUser godoc
+// @Summary Login
+// @Description Handler function to lookup an user in the database.
+// @Accept json
+// @Produces json
+// @Success 200 {object} model.User
+// @Failure 500 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /findUser [post]
 func findUser() {
 	apiv1.POST("/findUser", func(c *gin.Context) {
 		var reqUser model.User
